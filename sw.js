@@ -1,4 +1,4 @@
--const CACHE = 'level-up-static-v5';
+-const CACHE = 'level-up-static-v6';
 const FILES = ['./', './index.html', './style.css', './app.js', './manifest.webmanifest'];
 
 self.addEventListener('install', event => {
