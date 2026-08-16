@@ -28,7 +28,7 @@ $('#action-form').addEventListener('submit',event=>{event.preventDefault();addAc
 $('#history').addEventListener('click',event=>{const id=Number(event.target.dataset.id);if(!id||!confirm('Удалить это действие?'))return;const data=read();data.actions=data.actions.filter(a=>a.id!==id);save(data);render();toast('Действие удалено');});
 $('#export-data').onclick=()=>{const blob=new Blob([JSON.stringify(read(),null,2)],{type:'application/json'}),link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=`level-up-backup-${today()}.json`;link.click();URL.revokeObjectURL(link.href);toast('Копия скачана');};
 $('#import-data').addEventListener('change',event=>{const file=event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{const copy=JSON.parse(reader.result);if(!Array.isArray(copy.actions))throw Error();save(copy);render();toast('Прогресс восстановлен!');}catch{toast('Не удалось прочитать этот файл.');}event.target.value='';};reader.readAsText(file);});
-$('#reset-data').onclick=()=>{if(confirm('Точно удалить весь прогресс с этого устройства? Сначала лучше скачай резервную копию.')){localStorage.removeItem(STORE);render();toast('Данные удалены');}};
+$('#reset-data').onclick=()=>{if(confirm('Точно удалить весь прогресс с этого устройства??? Сначала лучше скачай резервную копию.')){localStorage.removeItem(STORE);render();toast('Данные удалены');}};
 setTheme(localStorage.getItem(`${STORE}-theme`) || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
 $('#theme-toggle').onclick=()=>{const next=document.body.classList.contains('dark')?'light':'dark';localStorage.setItem(`${STORE}-theme`,next);setTheme(next);};
 
