@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#302a67">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="style.css">
+  <title>Level Up</title>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="hero"><button id="theme-toggle" class="theme-toggle" aria-label="Переключить тему">🌙</button><button id="open-games" class="games-toggle" aria-label="Открыть игры">🎮</button>
+      <div><p class="eyebrow">ЛИЧНЫЙ RPG-ТРЕКЕР</p><h1>Level Up</h1><p>Прокачивай себя каждый день</p></div>
+      <div class="hero-level"><span>ОБЩИЙ УРОВЕНЬ</span><strong id="hero-level">1</strong></div>
+    </header>
+
+    <section class="summary"><span id="today-count">0</span><div><strong>действий сегодня</strong><small>Каждый шаг добавляет опыт</small></div></section>
+
+    <section><div class="section-heading"><h2>Характеристики</h2><span id="total-points">0 XP всего</span></div><div id="stats" class="stat-grid"></div></section>
+
+    <section><div class="section-heading"><h2>Быстро добавить</h2><button class="text-button" id="open-custom">Своё действие</button></div>
+      <div class="quick-actions">
+        <button class="quick-action" data-title="Тренировка" data-stat="strength"><span>🏋️</span><b>Тренировка</b><small>+1 Сила</small></button>
+        <button class="quick-action" data-title="Учёба в школе" data-stat="knowledge"><span>🏫</span><b>Учёба в школе</b><small>+1 Знания</small></button>
+        <button class="quick-action" data-title="Чтение" data-stat="knowledge"><span>📚</span><b>Чтение</b><small>+1 Знания</small></button>
+        <button class="quick-action" data-title="Прогулка" data-stat="endurance"><span>🚶</span><b>Прогулка</b><small>+1 Выносливость</small></button>
+        <button class="quick-action" data-title="Выполнил план" data-stat="discipline"><span>✅</span><b>Выполнил план</b><small>+1 Дисциплина</small></button>
+      </div>
+    </section>
+
+    <section class="history-section"><div class="section-heading"><h2>История</h2><span>Все действия</span></div><div id="history" class="history"></div></section>
+    <section class="storage"><h2>Резервная копия</h2><p>Сохрани файл с прогрессом в «Файлы» или iCloud. Он поможет восстановить данные после очистки Safari или при смене телефона.</p><div><button id="export-data" class="outline">Скачать копию</button><label class="outline file-label">Загрузить копию<input id="import-data" type="file" accept="application/json"></label></div><button id="reset-data" class="danger">Удалить все данные с этого устройства</button></section>
+  </main>
+
+  <dialog id="action-dialog"><form id="action-form" method="dialog"><div class="dialog-top"><h2>Новое действие</h2><button type="button" class="close" id="close-dialog" aria-label="Закрыть">×</button></div><label>Что сделал?<input id="action-title" maxlength="80" required placeholder="Например, пробежка"></label><label>Характеристика<select id="action-stat"><option value="strength">⚔️ Сила</option><option value="knowledge">🧠 Знания</option><option value="endurance">⚡ Выносливость</option><option value="discipline">🎯 Дисциплина</option></select></label><div class="form-row"><label>Очки<input id="action-points" type="number" min="1" max="100" value="1" required></label><label>Дата<input id="action-date" type="date" required></label></div><button class="primary" type="submit">Добавить опыт</button></form></dialog>
+  <dialog id="games-dialog"><div class="games-dialog"><div class="dialog-top"><h2>Мини-игры</h2><button type="button" class="close" id="close-games" aria-label="Закрыть">×</button></div><button id="choose-reaction" class="game-choice"><span>⚡</span><b>Проверка реакции</b><small>20 секунд · опыт за попадания</small></button><button id="choose-tetris" class="game-choice"><span>🧱</span><b>Тетрис</b><small>Собирай линии на телефоне</small></button></div></dialog>
+  <dialog id="game-dialog"><div class="game-dialog"><div class="dialog-top"><h2>Проверка реакции</h2><button type="button" class="close" id="close-game" aria-label="Закрыть">×</button></div><div class="game-score"><span>Время: <b id="game-time">20</b></span><span>Попадания: <b id="game-score">0</b></span><span>Рекорд: <b id="reaction-best">0</b></span></div><div id="game-area" class="game-area"><button id="target" aria-label="Цель">⚡</button><p id="game-message">Нажми «Начать»</p></div><button id="start-game" class="primary">Начать</button></div></dialog>
+  <dialog id="tetris-dialog"><div class="tetris-dialog"><div class="dialog-top"><h2>Тетрис</h2><button type="button" class="close" id="close-tetris" aria-label="Закрыть">×</button></div><div class="tetris-info"><span>Счёт: <b id="tetris-score">0</b></span><span>Рекорд: <b id="tetris-best">0</b></span></div><canvas id="tetris-board" width="240" height="432" aria-label="Поле тетриса"></canvas><div class="tetris-controls"><button data-tetris="rotate">↻</button><button data-tetris="left">←</button><button data-tetris="down">↓</button><button data-tetris="right">→</button></div><button id="start-tetris" class="primary">Начать игру</button></div></dialog>
+  <div id="toast" role="status"></div><script src="app.js"></script>
+</body>
+</html>
