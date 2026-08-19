@@ -51,8 +51,29 @@ function collides(dx=0,dy=0,shape=piece.shape){return shape.some((row,y)=>row.so
 function merge(){piece.shape.forEach((row,y)=>row.forEach((v,x)=>{if(v&&piece.y+y>=0)board[piece.y+y][piece.x+x]=piece.color;}));let cleared=0;board=board.filter(row=>{if(row.every(Boolean)){cleared++;return false;}return true;});while(board.length<ROWS)board.unshift(Array(COLS).fill(0));if(cleared){tetrisScore+=cleared*100;$('#tetris-score').textContent=tetrisScore;}spawn();}
 function tetrisStep(){if(!tetrisRunning)return;if(!collides(0,1))piece.y++;else merge();drawTetris();}
 function moveTetris(direction){if(!tetrisRunning)return;if(direction==='rotate'){const rotated=piece.shape[0].map((_,i)=>piece.shape.map(row=>row[i]).reverse());if(!collides(0,0,rotated))piece.shape=rotated;}else{const dx=direction==='left'?-1:direction==='right'?1:0,dy=direction==='down'?1:0;if(!collides(dx,dy))piece.x+=dx,piece.y+=dy;else if(direction==='down')merge();}drawTetris();}
-function endTetris(){clearInterval(tetrisTimer);tetrisRunning=false;const best=Math.max(Number(localStorage.getItem(`${STORE}-tetris-best`)||0),tetrisScore);localStorage.setItem(`${STORE}-tetris-best`,best);$('#tetris-best').textContent=best;$('#start-tetris').textContent='Сыграть ещё раз';}
-function startTetris(){clearInterval(tetrisTimer);board=emptyBoard();tetrisScore=0;tetrisRunning=true;$('#tetris-score').textContent='0';$('#tetris-best').textContent=localStorage.getItem(`${STORE}-tetris-best`)||'0';$('#start-tetris').textContent='Игра идёт…';spawn();drawTetris();tetrisTimer=setInterval(tetrisStep,650);}
-$('#choose-tetris').onclick=()=>{gamesDialog.close();tetrisDialog.showModal();board=emptyBoard();piece=null;tetrisScore=0;$('#tetris-score').textContent='0';$('#tetris-best').textContent=localStorage.getItem(`${STORE}-tetris-best`)||'0';drawTetris();}; $('#close-tetris').onclick=()=>{clearInterval(tetrisTimer);tetrisRunning=false;tetrisDialog.close();}; $('#start-tetris').onclick=startTetris; document.querySelectorAll('[data-tetris]').forEach(button=>button.onclick=()=>moveTetris(button.dataset.tetris)); document.addEventListener('keydown',event=>{if(!tetrisDialog.open)return;const keys={ArrowLeft:'left',ArrowRight:'right',ArrowDown:'down',ArrowUp:'rotate'};if(keys[event.key]){event.preventDefault();moveTetris(keys[event.key]);}});
+function endTetris(){clearInterval(tetrisTimer);tetrisRunning=false;const best=Math.max(Number(localStorage.getItem(`${STORE}-tetris-best`)||0),tetrisScore);localStorage.setItem(`${STORE}-tetris-best`,best);$('#tetris-best').textContent=best;$('#start-tetris').textContent='Сыграть ещё раз';$('#start-tetris').disabled=false;}
+function startTetris(){clearInterval(tetrisTimer);board=emptyBoard();tetrisScore=0;tetrisRunning=true;$('#tetris-score').textContent='0';$('#tetris-best').textContent=localStorage.getItem(`${STORE}-tetris-best`)||'0';$('#start-tetris').textContent='Игра идёт…'; $('#start-tetris').disabled=true;
+spawn();drawTetris();tetrisTimer=setInterval(tetrisStep,650);}
+$('#choose-tetris').onclick=()=>{gamesDialog.close();tetrisDialog.showModal();board=emptyBoard();piece=null;tetrisScore=0;$('#tetris-score').textContent='0';$('#tetris-best').textContent=localStorage.getItem(`${STORE}-tetris-best`)||'0';drawTetris();}; $('#close-tetris').onclick=()=>{clearInterval(tetrisTimer);tetrisRunning=false;tetrisDialog.close();}; $('#start-tetris').onclick=startTetris; let controlTimer;
+document.querySelectorAll('[data-tetris]').forEach(button => {
+    function startControl(event) {
+        event.preventDefault();
+        const direction = button.dataset.tetris;
+        moveTetris(direction);
+        clearInterval(controlTimer);
+        controlTimer = setInterval(() => {
+            moveTetris(direction);
+        }, 100);
+    }
+    function stopControl() {
+        clearInterval(controlTimer);
+        controlTimer = null;
+    }
+    button.addEventListener('mousedown', startControl);
+    button.addEventListener('mouseup', stopControl);
+    button.addEventListener('mouseleave', stopControl);
+    button.addEventListener('touchstart', startControl, {passive: false});
+    button.addEventListener('touchend', stopControl);
+    button.addEventListener('touchcancel', stopControl);});document.addEventListener('keydown',event=>{if(!tetrisDialog.open)return;const keys={ArrowLeft:'left',ArrowRight:'right',ArrowDown:'down',ArrowUp:'rotate'};if(keys[event.key]){event.preventDefault();moveTetris(keys[event.key]);}});
 if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
 render();
